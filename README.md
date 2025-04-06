@@ -73,10 +73,10 @@ var result = new Session()
 using Heaven.Data;
 
 var result = new Session()
-    .Select($"u.{nameof(User.Id)}", "u.{nameof(User.Name)}", "o.{nameof(Order.OrderDate)}")
+    .Select($"u.{nameof(User.Id)}", $"u.{nameof(User.Name)}", $"o.{nameof(Order.OrderDate)}")
     .From<User>("u")
-    .Join<Order>("o", "u.{nameof(User.Id)} = o.{nameof(Order.UserId)}")
-    .Where("o.{nameof(Order.OrderDate)} > @orderDate")
+    .Join<Order>("o", $"u.{nameof(User.Id)} = o.{nameof(Order.UserId)}")
+    .Where($"o.{nameof(Order.OrderDate)} > @orderDate")
     .QueryAsync<List<object>>(new {orderDate = "2025-01-01"});
 ```
 
