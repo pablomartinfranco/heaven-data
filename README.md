@@ -16,9 +16,19 @@ using Heaven.Data;
 var result = new Session()
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
     .From<User>()
-    .Where($"{nameof(User.Age)} > 21")
+    .Where($"{nameof(User.Age)} > @age")
     .OrderBy(nameof(User.Name))
-    .QueryAsync<List<User>>();
+    .QueryAsync<List<User>>(new {age = 21});
+```
+
+```csharp
+using Heaven.Data;
+
+var result = new Session()
+    .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
+    .From<User>()
+    .Where($"{nameof(User.Id)} == @id")
+    .QuerySingleAsync<User>(new {id = 10});
 ```
 
 #### Insert Query
@@ -30,7 +40,7 @@ var result = new Session()
     .Insert<User>()
     .Into(nameof(User.Name), nameof(User.Age))
     .Value("@name", "@age")
-    .QueryAsync(new {name = "John Doe", age = 25});
+    .ExecuteAsync(new {name = "John Doe", age = 25});
 ```
 
 #### Update Query
@@ -42,7 +52,7 @@ var result = new Session()
     .Update<User>()
     .Set($"{nameof(User.Name)} = @name", $"{nameof(User.Age)} = @age")
     .Where($"{nameof(User.Id)} = @id")
-    .QueryAsync(new { name = "Jane Doe", age = 27, id = 1 });
+    .ExecuteAsync(new {name = "Jane Doe", age = 27, id = 1});
 ```
 
 #### Delete Query
@@ -54,7 +64,7 @@ var result = new Session()
     .Delete()
     .From<User>()
     .Where($"{nameof(User.Id)} = @id")
-    .QueryAsync(new { id = 1 });
+    .ExecuteAsync(new {id = 1});
 ```
 
 #### Join Query
@@ -63,11 +73,11 @@ var result = new Session()
 using Heaven.Data;
 
 var result = new Session()
-    .Select("u.Id", "u.Name", "o.OrderDate")
+    .Select($"u.{nameof(User.Id)}", "u.{nameof(User.Name)}", "o.{nameof(Order.OrderDate)}")
     .From<User>("u")
-    .Join<Order>("o", "u.Id = o.UserId")
-    .Where("o.OrderDate > @orderDate")
-    .QueryAsync<List<object>>(new { orderDate = "2025-01-01" });
+    .Join<Order>("o", "u.{nameof(User.Id)} = o.{nameof(Order.UserId)}")
+    .Where("o.{nameof(Order.OrderDate)} > @orderDate")
+    .QueryAsync<List<object>>(new {orderDate = "2025-01-01"});
 ```
 
 ### MSSQL-Specific Queries
@@ -129,9 +139,9 @@ using Heaven.Data;
 var result = new Session()
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
     .From<User>()
-    .Where($"{nameof(User.Age)} > 21")
+    .Where($"{nameof(User.Age)} > @age")
     .OrderBy(nameof(User.Name))
-    .QueryAsync<List<User>>();
+    .QueryAsync<List<User>>(new {age = 21});
 ```
 
 #### Executing Non-Select Queries with QueryAsync
@@ -143,6 +153,6 @@ var result = new Session()
     .Update<User>()
     .Set($"{nameof(User.Name)} = @name", $"{nameof(User.Age)} = @age")
     .Where($"{nameof(User.Id)} = @id")
-    .QueryAsync(new { name = "Jane Doe", age = 27, id = 1 });
+    .ExecuteAsync(new {name = "Jane Doe", age = 27, id = 1});
 ```
 
