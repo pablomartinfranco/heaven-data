@@ -27,7 +27,7 @@ using Heaven.Data;
 var result = new Session()
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
     .From<User>()
-    .Where($"{nameof(User.Id)} == @id")
+    .Where($"{nameof(User.Id)} = @id")
     .QuerySingleAsync<User>(new {id = 10});
 ```
 
