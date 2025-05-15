@@ -13,7 +13,9 @@ Heaven Data allows you to create SQL queries using a fluent API. Below are some 
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+Func<IDbConnection> connection = () => throw new NotImplementedException("Error: connection not implemented.");
+
+var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
     .From<User>()
     .Where($"{nameof(User.Age)} > @age")
@@ -24,7 +26,7 @@ var result = new Session()
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
     .From<User>()
     .Where($"{nameof(User.Id)} = @id")
@@ -36,7 +38,7 @@ var result = new Session()
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Insert<User>()
     .Into(nameof(User.Name), nameof(User.Age))
     .Value("@name", "@age")
@@ -48,7 +50,7 @@ var result = new Session()
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Update<User>()
     .Set($"{nameof(User.Name)} = @name", $"{nameof(User.Age)} = @age")
     .Where($"{nameof(User.Id)} = @id")
@@ -60,7 +62,7 @@ var result = new Session()
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Delete()
     .From<User>()
     .Where($"{nameof(User.Id)} = @id")
@@ -72,7 +74,7 @@ var result = new Session()
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Select($"u.{nameof(User.Id)}", $"u.{nameof(User.Name)}", $"o.{nameof(Order.OrderDate)}")
     .From<User>("u")
     .Join<Order>("o", $"u.{nameof(User.Id)} = o.{nameof(Order.UserId)}")
@@ -89,7 +91,7 @@ Heaven Data provides extensions for MSSQL-specific queries.
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name))
     .From<User>()
     .Top(10)
@@ -102,7 +104,7 @@ var result = new Session()
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name))
     .From<User>()
     .OrderBy(nameof(User.Name))
@@ -119,7 +121,7 @@ Heaven Data provides extensions for MySQL-specific queries.
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name))
     .From<User>()
     .OrderBy(nameof(User.Name))
@@ -136,7 +138,7 @@ Heaven Data also provides asynchronous methods for executing SQL queries using D
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
     .From<User>()
     .Where($"{nameof(User.Age)} > @age")
@@ -144,12 +146,12 @@ var result = new Session()
     .QueryAsync<List<User>>(new {age = 21});
 ```
 
-#### Executing Non-Select Queries with QueryAsync
+#### Executing Non-Select Queries with ExecuteAsync
 
 ```csharp
 using Heaven.Data;
 
-var result = new Session()
+var result = new Session(connection)
     .Update<User>()
     .Set($"{nameof(User.Name)} = @name", $"{nameof(User.Age)} = @age")
     .Where($"{nameof(User.Id)} = @id")
