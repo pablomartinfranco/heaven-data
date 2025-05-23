@@ -13,7 +13,8 @@ Heaven Data allows you to create SQL queries using a fluent API. Below are some 
 ```csharp
 using Heaven.Data;
 
-Func<IDbConnection> connection = () => throw new NotImplementedException("Error: connection not implemented.");
+Func<IDbConnection> connection = () => 
+    throw new NotImplementedException("Error: connection not implemented.");
 
 var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
