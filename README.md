@@ -8,13 +8,15 @@ Heaven Data is a library for building SQL queries in a fluent and intuitive way.
 
 Heaven Data allows you to create SQL queries using a fluent API. Below are some examples of how to use the library to create various types of SQL queries.
 
+```csharp
+Func<IDbConnection> connection = () => 
+    throw new NotImplementedException("Error: connection not implemented.");
+```
+
 #### Select Query
 
 ```csharp
 using Heaven.Data;
-
-Func<IDbConnection> connection = () => 
-    throw new NotImplementedException("Error: connection not implemented.");
 
 var result = new Session(connection)
     .Select(nameof(User.Id), nameof(User.Name), nameof(User.Age))
